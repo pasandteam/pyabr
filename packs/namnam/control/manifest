@@ -1,0 +1,7 @@
+name: namnam
+copyright: (c) 2020 Mani Jamali
+license: GNU GPL v3.0
+unpack: /
+build: 1399-04-25
+version: 0.1.2
+description: NamNam kernel is the most important the part of PyAbr

@@ -1,0 +1,7 @@
+name: saye
+copyright: (c) 2020 Mani Jamali
+license: GNU GPL v3.0
+unpack: /
+build: 1399-04-24
+version: 0.0.5
+description: Saye shell script with linux like commands

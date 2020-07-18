@@ -1,0 +1,11 @@
+#!etcetra
+
+kernel: Yes
+gui: Yes
+gui-user: No
+gui-login: No
+user: No
+login: No
+exec: No
+client: Yes
+ok: Yes

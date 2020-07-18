@@ -1,0 +1,7 @@
+
+paye [options] [package] ...
+
+ <options>      <package>    <job>
+ -c                          Clear the cache
+ -u             app.pa       Unpack 'app.pa' archive package
+ -b             app          Build 'app' project

@@ -1,0 +1,6 @@
+
+pyc [option] [src] [dest]
+
+ <option>      <src>        <dest>      <job>
+ -c            main.py      app.pyc     Compile 'main.py' to 'app.pyc' file
+               main.py                  Compile 'main.py' to 'main.pyc' file

@@ -1,0 +1,3 @@
+paye.py:usr/app/paye.so
+upgrade.py:usr/app/upgrade.so
+libpa.py:usr/app/libpa.so

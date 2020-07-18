@@ -1,0 +1,31 @@
+#!etcetra
+
+desktop: baran
+login: baran login
+user: baran user
+fullscreen: No
+sides: No
+width: 1280
+height: 720
+autosize: No
+logo: @icon/pyabr-logo
+
+backend.color: black
+backend.timeout: 1000
+
+splash.timeout: 3000
+splash.logo: @icon/pyabr-logo
+splash.logo-size: 300
+
+login.bgcolor: #123456
+login.background: @background/default
+login.fgcolor: #FFFFFF
+
+enter.bgcolor: #123456
+enter.background: @background/default
+enter.fgcolor: #FFFFFF
+
+loginw.bgcolor: white
+loginw.fgcolor: black
+loginw.round: Yes
+loginw.location: right
