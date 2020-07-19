@@ -20,6 +20,7 @@ from libabr import app, archive, core, file, res
 
 ## Main entry ##
 application = QApplication (sys.argv)
+app.start('desktop')
 ## https://www.cdog.pythonlibrary.org/2015/08/18/getting-your-screen-resolution-with-python/ Get screen model ##
 screen_resolution = application.desktop().screenGeometry()
 width, height = screen_resolution.width(), screen_resolution.height()
@@ -260,7 +261,19 @@ class LoginWidget (QMainWindow):
         loginw_width = getdata('loginw.width')
         loginw_height = getdata('loginw.height')
         loginw_round = getdata('loginw.round')
+        loginw_round_size = getdata('loginw.round-size')
         loginw_location = getdata('loginw.location')
+        loginw_shadow = getdata('loginw.shadow')
+        loginw_userlogo = getdata('loginw.userlogo')
+        loginw_userlogo_shadow = getdata('loginw.userlogo.shadow')
+        loginw_userlogo_color = getdata('loginw.userlogo.color')
+        loginw_input_bgcolor = getdata('loginw.input.bgcolor')
+        loginw_input_fgcolor = getdata('loginw.input.fgcolor')
+        loginw_input_shadow = getdata('loginw.input.shadow')
+        loginw_input_round = getdata('loginw.input.round')
+        loginw_input_round_size = getdata('loginw.input.round-size')
+        loginw_userlogo_round = getdata('loginw.userlogo.round')
+        loginw_userlogo_round_size = getdata('loginw.userlogo.round-size')
 
         ## Check data ##
         if loginw_bgcolor == None:
@@ -275,33 +288,144 @@ class LoginWidget (QMainWindow):
         if loginw_height == None:
             loginw_height = self.height()
 
+        if loginw_round_size == None:
+            loginw_round_size = '20% 20%'
+        else:
+            loginw_round_size = loginw_round_size.replace(' ','% ')+'%'
+
+        if loginw_userlogo_round_size == None:
+            loginw_userlogo_round_size = '125% 125%'
+        else:
+            loginw_userlogo_round_size = loginw_userlogo_round_size.replace(' ','% ')+'%'
+
+        if loginw_input_round_size == None:
+            loginw_input_round_size = '15% 15%'
+        else:
+            loginw_input_round_size = loginw_input_round_size.replace(' ','% ')+'%'
+
         if loginw_round == 'Yes':
-            loginw_round = '20% 20%'
+            loginw_round = loginw_round_size
         else:
             loginw_round = '0% 0%'
+
+        if loginw_userlogo_round == 'Yes':
+            loginw_userlogo_round = loginw_userlogo_round_size
+        else:
+            loginw_userlogo_round = '0% 0%'
+
+        if loginw_input_round == 'Yes':
+            loginw_input_round = loginw_input_round_size
+        else:
+            loginw_input_round = '0% 0%'
 
         if loginw_location == None:
             loginw_location = 'center'
 
-        self.setStyleSheet('background-color:{0};color:{1};border-radius:{2};'
-                                  .replace('{0}', loginw_bgcolor)
-                                  .replace('{1}', loginw_fgcolor)
-                                  .replace('{2}', loginw_round)
-                                  )  ## Set color white as default
         self.setMaximumSize(int(loginw_width), int(loginw_height))  ## Set size of loginw
 
         ## Locations ##
 
-        if loginw_location=='center':
-            self.setGeometry(int(self.Env.width() / 2) - int(self.width() / 2),int(self.Env.height() / 2) - int(self.height() / 2), self.width(),self.height())  ## Geometric
-        elif loginw_location=='top':
-            self.setGeometry(int(self.Env.width() / 2) - int(self.width() / 2),int(self.height()/20), self.width(),self.height())  ## Geometric
-        elif loginw_location=='left':
-            self.setGeometry(int(self.width()/20),int(self.Env.height() / 2) - int(self.height() / 2), self.width(),self.height())  ## Geometric
-        elif loginw_location=='right':
-            self.setGeometry(self.Env.width()-int(self.width()/20)-self.width(),int(self.Env.height() / 2) - int(self.height() / 2), self.width(),self.height())  ## Geometric
-        elif loginw_location=='bottom':
-            self.setGeometry(int(self.Env.width() / 2) - int(self.width() / 2),self.Env.height()-int(self.height()/20)-self.height(), self.width(),self.height())  ## Geometric
+        if loginw_location == 'center':
+            self.setGeometry(int(self.Env.width() / 2) - int(self.width() / 2),
+                             int(self.Env.height() / 2) - int(self.height() / 2), self.width(),
+                             self.height())  ## Geometric
+        elif loginw_location == 'top':
+            self.setGeometry(int(self.Env.width() / 2) - int(self.width() / 2), int(self.height() / 20), self.width(),
+                             self.height())  ## Geometric
+        elif loginw_location == 'left':
+            self.setGeometry(int(self.width() / 20), int(self.Env.height() / 2) - int(self.height() / 2), self.width(),
+                             self.height())  ## Geometric
+        elif loginw_location == 'right':
+            self.setGeometry(self.Env.width() - int(self.width() / 20) - self.width(),
+                             int(self.Env.height() / 2) - int(self.height() / 2), self.width(),
+                             self.height())  ## Geometric
+        elif loginw_location == 'bottom':
+            self.setGeometry(int(self.Env.width() / 2) - int(self.width() / 2),
+                             self.Env.height() - int(self.height() / 20) - self.height(), self.width(),
+                             self.height())  ## Geometric
+
+        if loginw_shadow=='Yes':
+            ## Shadow ##
+            # Copy right shadow box: medium.com/@rekols/qt-button-box-shadow-property-c47c7bf58721 ##
+            shadow = QGraphicsDropShadowEffect()
+            shadow.setColor(QColor(10, 2, 34, 255 * 0.8))
+            shadow.setOffset(0)
+            shadow.setBlurRadius(10)
+            self.setGraphicsEffect(shadow)
+
+            ## BackgroudcolorButton ##
+        self.btnColorButton = QPushButton()
+        self.btnColorButton.setGeometry(0,0,self.width(),self.height())
+        self.layout().addWidget(self.btnColorButton)
+            ##
+
+            ## Set colors ##
+        self.setStyleSheet('color:{0};border-radius:{1};'
+            .replace('{0}', loginw_fgcolor)
+            .replace('{1}', loginw_round)
+        )  ## Set color white as default
+        self.btnColorButton.setStyleSheet('background-color:{0};'
+            .replace('{0}',loginw_bgcolor)
+        )
+
+        ## Userlogo ##
+
+        self.userlogo = QToolButton()
+
+            ## Set size & location ##
+        self.userlogo.setMaximumSize(250,250)
+        self.userlogo.setGeometry(int(self.width()/2)-int(self.userlogo.width()/2),int(self.height()/4)-int(self.userlogo.height()/4),self.userlogo.width(),self.userlogo.height())
+
+        if loginw_userlogo_color == None: loginw_userlogo_color = 'white'
+
+        if not loginw_userlogo == None:
+            self.userlogo.setStyleSheet('background-color: {0};border-radius: {1};background-image: url({2});'
+                .replace('{0}', loginw_userlogo_color)
+                .replace('{1}',loginw_userlogo_round)
+                .replace('{2}', res.get(loginw_userlogo))
+            )
+
+            ## Shadow for userlogo ##
+        ## Shadow ##
+        if not loginw_userlogo_shadow=='No':
+            # Copy right shadow box: medium.com/@rekols/qt-button-box-shadow-property-c47c7bf58721 ##
+            shadow = QGraphicsDropShadowEffect()
+            shadow.setColor(QColor(10, 2, 34, 255 * 0.8))
+            shadow.setOffset(0)
+            shadow.setBlurRadius(10)
+            self.userlogo.setGraphicsEffect(shadow)
+
+            ## Default userlogo ##
+        self.layout().addWidget (self.userlogo)
+
+            ## leInput username ##
+
+        self.leInput = QLineEdit()
+
+            ## Size & Location of leInput ##
+        self.leInput.setMaximumSize(int(self.width()/1.5),30)
+        self.leInput.setGeometry(int(self.width()/2)-int(self.leInput.width()/2),self.height()-int(self.height()/4)-self.leInput.height(),self.leInput.width(),self.leInput.height())
+
+            ## Shadow of leInput ##
+        ## Shadow ##
+        if not loginw_input_shadow=='No':
+            # Copy right shadow box: medium.com/@rekols/qt-button-box-shadow-property-c47c7bf58721 ##
+            shadow = QGraphicsDropShadowEffect()
+            shadow.setColor(QColor(10, 2, 34, 255 * 0.8))
+            shadow.setOffset(0)
+            shadow.setBlurRadius(10)
+            self.leInput.setGraphicsEffect(shadow)
+
+            ## Colors of leInput ##
+        if loginw_input_bgcolor==None: loginw_input_bgcolor='white'
+        if loginw_input_fgcolor==None: loginw_input_fgcolor='black'
+
+            ## Setting up all colors ##
+        self.leInput.setStyleSheet('background-color: '+loginw_input_bgcolor+';color: '+loginw_input_fgcolor+";border-width: 3%;border-radius: "+loginw_input_round)
+
+        self.layout().addWidget(self.leInput)
+
+
 ## Login ##
 class Login (QMainWindow):
     def __init__(self,ports):
@@ -386,7 +510,6 @@ class Login (QMainWindow):
 
         ## Login widget ##
 
-            ## Import data ##
         self.loginw = LoginWidget([self.Backend,self])
         self.layout().addWidget (self.loginw)
 
@@ -484,6 +607,11 @@ class Enter (QMainWindow):
             variables.sides = False
         if variables.sides == False:
             self.setWindowFlag(Qt.FramelessWindowHint)
+
+        ## Login widget ##
+
+        self.loginw = LoginWidget([self.Backend,self])
+        self.layout().addWidget (self.loginw)
 
         ## Show ##
         ## Get data ##
