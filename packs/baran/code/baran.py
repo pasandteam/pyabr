@@ -14,7 +14,7 @@
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
-import sys
+import sys, hashlib, os
 from libnam import colors, control, files, modules, permissions, process
 from libabr import app, archive, core, file, res
 
@@ -61,6 +61,9 @@ class Backend (QMainWindow):
 
     def __init__(self):
         super(Backend, self).__init__()
+
+        ## Set port name ##
+        self.setObjectName('Backend')
 
         ## Get informations ##
         cs = files.readall ('/proc/info/cs')
@@ -141,6 +144,9 @@ class Splash (QMainWindow):
 
     def __init__(self,ports):
         super(Splash, self).__init__()
+
+        ## Set port name ##
+        self.setObjectName('Splash')
 
         ## Get informations ##
         cs = files.readall('/proc/info/cs')
@@ -274,6 +280,7 @@ class LoginWidget (QMainWindow):
         loginw_input_round_size = getdata('loginw.input.round-size')
         loginw_userlogo_round = getdata('loginw.userlogo.round')
         loginw_userlogo_round_size = getdata('loginw.userlogo.round-size')
+        loginw_input_fontsize = getdata('loginw.input.fontsize')
 
         ## Check data ##
         if loginw_bgcolor == None:
@@ -299,7 +306,7 @@ class LoginWidget (QMainWindow):
             loginw_userlogo_round_size = loginw_userlogo_round_size.replace(' ','% ')+'%'
 
         if loginw_input_round_size == None:
-            loginw_input_round_size = '15% 15%'
+            loginw_input_round_size = '20% 20%'
         else:
             loginw_input_round_size = loginw_input_round_size.replace(' ','% ')+'%'
 
@@ -320,6 +327,11 @@ class LoginWidget (QMainWindow):
 
         if loginw_location == None:
             loginw_location = 'center'
+
+        if loginw_input_fontsize==None:
+            loginw_input_fontsize = 12
+        else:
+            loginw_input_fontsize = int(loginw_input_fontsize)
 
         self.setMaximumSize(int(loginw_width), int(loginw_height))  ## Set size of loginw
 
@@ -379,6 +391,10 @@ class LoginWidget (QMainWindow):
         if loginw_userlogo_color == None: loginw_userlogo_color = 'white'
 
         if not loginw_userlogo == None:
+            if self.Env.objectName()=='Enter':
+                logo = control.read_record ('loginw.userlogo','/etc/users/'+self.Env.username)
+                if not logo == None: loginw_userlogo = logo
+
             self.userlogo.setStyleSheet('background-color: {0};border-radius: {1};background-image: url({2});'
                 .replace('{0}', loginw_userlogo_color)
                 .replace('{1}',loginw_userlogo_round)
@@ -403,7 +419,7 @@ class LoginWidget (QMainWindow):
         self.leInput = QLineEdit()
 
             ## Size & Location of leInput ##
-        self.leInput.setMaximumSize(int(self.width()/1.5),30)
+        self.leInput.setMaximumSize(int(self.width()/2),40)
         self.leInput.setGeometry(int(self.width()/2)-int(self.leInput.width()/2),self.height()-int(self.height()/4)-self.leInput.height(),self.leInput.width(),self.leInput.height())
 
             ## Shadow of leInput ##
@@ -423,13 +439,93 @@ class LoginWidget (QMainWindow):
             ## Setting up all colors ##
         self.leInput.setStyleSheet('background-color: '+loginw_input_bgcolor+';color: '+loginw_input_fgcolor+";border-width: 3%;border-radius: "+loginw_input_round)
 
+            ## Place holder in input ##
+
+        if self.Env.objectName()=='Login':
+            self.leInput.setPlaceholderText(res.get('@string/username_placeholder')) # See https://stackoverflow.com/questions/24274318/placeholder-text-not-showing-pyside-pyqt
+        else:
+            self.leInput.setEchoMode(QLineEdit.Password)
+            print (res.get('@string/password_placeholder').replace("{0}",self.Env.username))
+            self.leInput.setPlaceholderText(res.get('@string/password_placeholder').replace("{0}",self.Env.username))
+
+            ## Setting up font settings ##
+        f = QFont()
+        f.setPointSize(loginw_input_fontsize)
+        self.leInput.setFont(f)
+
+            ## Connect to action ##
+
+        self.leInput.returnPressed.connect (self.actions)
+
+        ## Add leInput Widget ##
         self.layout().addWidget(self.leInput)
 
+    def actions (self):
+        if self.Env.objectName() == 'Login':
+            username = self.leInput.text()  ## Get username
+
+            if self.Env.guest == 'Yes' and username == 'guest':
+                self.Env.setCentralWidget(Desktop([self.Backend,self],username,'*'))
+
+            elif not files.isfile('/etc/users/' + username):
+                self.leInput.clear()
+                self.leInput.setEnabled(False)
+                message = res.get('@string/user_not_found')
+                if not message==None: message = message.replace("{0}",username)
+                self.leInput.setPlaceholderText(message)
+                QTimer.singleShot(2500, self.clean)
+            else:
+                ## Check user ##
+                hashname = hashlib.sha3_256(username.encode()).hexdigest()  ## Get hashname
+                name = control.read_record ('username','/etc/users/'+username)
+
+                if not hashname==name:
+                    self.leInput.clear()
+                    self.leInput.setEnabled(False)
+                    message = res.get('@string/user_not_found')
+                    if not message == None: message = message.replace("{0}", username)
+                    self.leInput.setPlaceholderText(message)
+                    QTimer.singleShot(2500, self.clean)
+
+                else:
+                    ## Setting up switched user ##
+
+                    self.Env.setCentralWidget(Enter ([self.Backend,self],username)) ## Switch user
+        elif self.Env.objectName()=='Enter':
+
+            username = self.Env.username
+            password = self.leInput.text()
+
+            ## Check password ##
+            hashcode = hashlib.sha3_512(password.encode()).hexdigest() ## Create hashcode for password
+            code = control.read_record('code','/etc/users/'+username)
+
+            if not code==hashcode:
+                self.leInput.clear()
+                self.leInput.setEnabled(False)
+                message = res.get('@string/wrong_password')
+                self.leInput.setPlaceholderText(message)
+                QTimer.singleShot(2500, self.clean)
+            else:
+                self.Env.setCentralWidget(Desktop([self.Backend,self],username,password))
+
+    def clean (self):
+        self.leInput.setEnabled(True)
+        if self.Env.objectName()=='Login':
+            self.leInput.setPlaceholderText(res.get('@string/username_placeholder')) # See https://stackoverflow.com/questions/24274318/placeholder-text-not-showing-pyside-pyqt
+        else:
+            self.leInput.setPlaceholderText(res.get('@string/password_placeholder').replace('{0}',self.Env.username))
 
 ## Login ##
 class Login (QMainWindow):
     def __init__(self,ports):
         super(Login, self).__init__()
+
+        ## Guest user ##
+        self.guest = control.read_record('enable_gui','/etc/guest')
+
+        ## Set port name ##
+        self.setObjectName('Login')
 
         ## Get informations ##
         cs = files.readall('/proc/info/cs')
@@ -453,7 +549,7 @@ class Login (QMainWindow):
 
         ## Set fgcolor ##
         if fgcolor == None:
-            variables.login_fgcolor = 'cdack'
+            variables.login_fgcolor = 'black'
         else:
             variables.login_fgcolor = fgcolor
 
@@ -532,6 +628,16 @@ class Enter (QMainWindow):
     def __init__(self,ports,username):
         super(Enter, self).__init__()
 
+        ## username ##
+        self.username = username
+
+        ## Ports ##
+        self.Backend = ports[0]
+        self.Env = ports[1]
+
+        ## Set port name ##
+        self.setObjectName('Enter')
+
         ## Get informations ##
         cs = files.readall('/proc/info/cs')
         ver = files.readall('/proc/info/ver')
@@ -548,9 +654,21 @@ class Enter (QMainWindow):
         background = getdata('enter.background')
         fgcolor = getdata('enter.fgcolor')
 
+        if not self.username=='guest':
+            value = control.read_record('enter.bgcolor','/etc/users/'+self.username)
+            if not value==None: bgcolor = value
+
+        if not self.username=='guest':
+            value = control.read_record('enter.background','/etc/users/'+self.username)
+            if not value==None: background = value
+
+        if not self.username=='guest':
+            value = control.read_record('enter.fgcolor','/etc/users/'+self.username)
+            if not value==None: fgcolor = value
+
         ## Set fgcolor ##
         if fgcolor == None:
-            variables.enter_fgcolor = 'cdack'
+            variables.enter_fgcolor = 'black'
         else:
             variables.enter_fgcolor = fgcolor
 
@@ -563,7 +681,7 @@ class Enter (QMainWindow):
         if background == None and bgcolor == None:
 
             ## Set bgcolor ##
-            variables.login_bgcolor = 'white'
+            variables.enter_bgcolor = 'white'
             self.setStyleSheet('color: {0};'.replace('{0}', variables.enter_fgcolor))
             self.backgroundButton.setStyleSheet(
                 'border:none;background-color: {0};'.replace('{0}', variables.enter_bgcolor))
@@ -571,7 +689,7 @@ class Enter (QMainWindow):
         elif background == None:
 
             ## Set bgcolor ##
-            variables.login_bgcolor = bgcolor
+            variables.enter_bgcolor = bgcolor
 
             self.setStyleSheet('color: {0};'.replace('{0}', variables.enter_fgcolor))
 
@@ -579,7 +697,7 @@ class Enter (QMainWindow):
                 'border:none;background-color: {0};'.replace('{0}', variables.enter_bgcolor))
         else:
             ## Set bgcolor ##
-            variables.login_background = res.get(background)
+            variables.enter_background = res.get(background)
             self.setStyleSheet('color: {0};'.replace('{0}', variables.enter_fgcolor))
             self.backgroundButton.setStyleSheet(
                 'border:none;background-image: url({0});'.replace('{0}', variables.enter_background))
@@ -632,6 +750,13 @@ class Desktop (QMainWindow):
     def __init__(self,ports,username,password):
         super(Desktop, self).__init__()
 
+        ## Set port name ##
+        self.setObjectName('Desktop')
+
+        ## username ##
+        self.username = username
+        self.password = password
+
         ## Get informations ##
         cs = files.readall('/proc/info/cs')
         ver = files.readall('/proc/info/ver')
@@ -649,13 +774,25 @@ class Desktop (QMainWindow):
         self.backgroundButton.setGeometry(0, 0, variables.width, variables.height)
         self.layout().addWidget(self.backgroundButton)
 
-        bgcolor = getdata('enter.bgcolor')
-        background = getdata('enter.background')
-        fgcolor = getdata('enter.fgcolor')
+        bgcolor = getdata('desktop.bgcolor')
+        background = getdata('desktop.background')
+        fgcolor = getdata('desktop.fgcolor')
+
+        if not self.username=='guest':
+            value = control.read_record('desktop.bgcolor','/etc/users/'+self.username)
+            if not value==None: bgcolor = value
+
+        if not self.username=='guest':
+            value = control.read_record('desktop.background','/etc/users/'+self.username)
+            if not value==None: background = value
+
+        if not self.username=='guest':
+            value = control.read_record('desktop.fgcolor','/etc/users/'+self.username)
+            if not value==None: fgcolor = value
 
         ## Set fgcolor ##
         if fgcolor == None:
-            variables.enter_fgcolor = 'cdack'
+            variables.enter_fgcolor = 'black'
         else:
             variables.enter_fgcolor = fgcolor
 
@@ -693,7 +830,7 @@ class Desktop (QMainWindow):
         if not width == None  and not autosize=='Yes':
             variables.width = int(width)
 
-        if not height == None:
+        if not height == None and not autosize=='Yes':
             variables.height = int(height)
 
         self.resize(variables.width, variables.height)

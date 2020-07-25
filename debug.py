@@ -12,4 +12,4 @@
 import os, sys
 
 os.system('py build.py && rm stor/proc/0')
-os.system ("cd stor && ./vmnam gui")
+os.system ("cd stor && chmod +x vmnam && ./vmnam gui")

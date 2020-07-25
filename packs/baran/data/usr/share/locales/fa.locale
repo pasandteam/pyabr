@@ -1,0 +1,4 @@
+desktop.username_placeholder: نام حساب کاربری خود را وارد فرمایید
+desktop.password_placeholder: گذرواژه {0} را وارد فرمایید
+desktop.user_not_found: هیچ حساب کاربری به اسم {0} وجود ندارد
+desktop.wrong_password: گذرواژه صحیح نمی باشد؛ دوباره امتحان کنید

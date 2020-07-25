@@ -3,12 +3,13 @@
 desktop: baran
 login: baran login
 user: baran user
-fullscreen: No
+fullscreen: Yes
 sides: No
-width: 1280
-height: 720
-autosize: No
+width: 1920
+height: 1080
+autosize: Yes
 logo: @icon/pyabr-logo
+locale: en
 
 backend.color: black
 backend.timeout: 1000
@@ -40,4 +41,5 @@ loginw.input.shadow: Yes
 loginw.input.fgcolor: gray
 loginw.input.bgcolor: white
 loginw.input.round: Yes
-loginw.input.round-size: 15 15
+loginw.input.round-size: 20 20
+loginw.input.font-size: 12

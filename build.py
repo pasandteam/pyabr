@@ -14,14 +14,18 @@ from buildlibs import control
 import shutil, os, sys
 
 
-#os.system('cd core && pyinstaller --onefile vmnam.py --hidden-import requests');shutil.copyfile('core/dist/vmnam','stor/vmnam')
-
-#pack.build ("namnam")
+#os.system('cd core && pyinstaller --onefile --noconfirm vmnam.py --hidden-import requests');shutil.copyfile('core/dist/vmnam','stor/vmnam')
+'''
+pack.build ("namnam")
 pack.build ("baran")
-#pack.build ("paye")
-#pack.build ("saye")
+pack.build ("paye")
+pack.build ("saye")
 
-#pack.unpack ("namnam")
+pack.unpack ("namnam")
 pack.unpack ("baran")
-#pack.unpack ("paye")
-#pack.unpack ("saye")
+pack.unpack ("paye")
+pack.unpack ("saye")
+'''
+
+pack.build ("baran")
+pack.unpack('baran')

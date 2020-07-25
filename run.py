@@ -11,4 +11,4 @@
 
 import os,sys
 
-os.system ("cd stor && ./vmnam user root toor")
+os.system ("cd stor && chmod +x vmnam && ./vmnam user root toor")
