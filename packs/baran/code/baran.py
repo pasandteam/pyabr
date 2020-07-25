@@ -46,6 +46,7 @@ class variables:
     password = ''
     desktop_bgcolor = '#123456'
     desktop_fgcolor = '#FFFFFF'
+    desktop_background = None
 
 ## ## ## ## ##
 
@@ -745,6 +746,39 @@ class Enter (QMainWindow):
         else:
             self.show()
 
+## Taskbar ##
+class TaskBar (QToolBar):
+    def __init__(self,ports):
+        super(TaskBar,self).__init__()
+
+        ## Ports ##
+        self.Backend = ports[0]
+        self.Env = ports[1]
+
+        ## Set username ##
+        self.username = self.Env.username
+
+            ## Get DATAS ###################
+
+        ## Set bgcolor ##
+        bgcolor = getdata('taskbar.bgcolor')
+        if not self.Env.username=='guest':
+            value = control.read_record('taskbar.bgcolor','/etc/users/'+self.username)
+            if not value==None: bgcolor = value
+        if bgcolor == None: bgcolor = 'white'
+
+        ## Set fgcolor ##
+        fgcolor = getdata('taskbar.fgcolor')
+        if not self.Env.username=='guest':
+            value = control.read_record('taskbar.fgcolor','/etc/users/'+self.username)
+            if not value==None: fgcolor = value
+        if fgcolor == None: fgcolor = 'black'
+
+            ################################
+
+        ## Add taskbar ##
+        self.Env.addToolBar (self)
+
 ## Desktop ##
 class Desktop (QMainWindow):
     def __init__(self,ports,username,password):
@@ -778,6 +812,8 @@ class Desktop (QMainWindow):
         background = getdata('desktop.background')
         fgcolor = getdata('desktop.fgcolor')
 
+
+        ## Check background or bgcolor in users ##
         if not self.username=='guest':
             value = control.read_record('desktop.bgcolor','/etc/users/'+self.username)
             if not value==None: bgcolor = value
@@ -790,37 +826,42 @@ class Desktop (QMainWindow):
             value = control.read_record('desktop.fgcolor','/etc/users/'+self.username)
             if not value==None: fgcolor = value
 
+        ## Check None bg ##
+        if bgcolor == None: bgcolor = 'white'
+        if fgcolor == None: fgcolor = 'black'
+        if background == None: background = '@background/default'
+
         ## Set fgcolor ##
         if fgcolor == None:
-            variables.enter_fgcolor = 'black'
+            variables.desktop_fgcolor = 'black'
         else:
-            variables.enter_fgcolor = fgcolor
+            variables.desktop_fgcolor = fgcolor
 
 
         ## Set bgcolor and background ##
         if background == None and bgcolor == None:
 
             ## Set bgcolor ##
-            variables.login_bgcolor = 'white'
-            self.setStyleSheet('color: {0};'.replace('{0}', variables.login_fgcolor))
+            variables.desktop_bgcolor = 'white'
+            self.setStyleSheet('color: {0};'.replace('{0}', variables.desktop_fgcolor))
             self.backgroundButton.setStyleSheet(
-                'border:none;background-color: {0};'.replace('{0}', variables.login_bgcolor))
+                'border:none;background-color: {0};'.replace('{0}', variables.desktop_bgcolor))
 
         elif background == None:
 
             ## Set bgcolor ##
-            variables.login_bgcolor = bgcolor
+            variables.desktop_bgcolor = bgcolor
 
-            self.setStyleSheet('color: {0};'.replace('{0}', variables.login_fgcolor))
+            self.setStyleSheet('color: {0};'.replace('{0}', variables.desktop_fgcolor))
 
             self.backgroundButton.setStyleSheet(
-                'border:none;background-color: {0};'.replace('{0}', variables.login_bgcolor))
+                'border:none;background-color: {0};'.replace('{0}', variables.desktop_bgcolor))
         else:
             ## Set bgcolor ##
-            variables.login_background = res.get(background)
-            self.setStyleSheet('color: {0};'.replace('{0}', variables.login_fgcolor))
+            variables.desktop_background = res.get(background)
+            self.setStyleSheet('color: {0};'.replace('{0}', variables.desktop_fgcolor))
             self.backgroundButton.setStyleSheet(
-                'border:none;background-image: url({0});'.replace('{0}', variables.login_background))
+                'border:none;background-image: url({0});'.replace('{0}', variables.desktop_background))
 
         ## Set size ##
         width = getdata('width')
@@ -845,6 +886,9 @@ class Desktop (QMainWindow):
             variables.sides = False
         if variables.sides == False:
             self.setWindowFlag(Qt.FramelessWindowHint)
+
+        ## Taskbar ##
+        self.taskbar = TaskBar ([Backend,self])
 
         ## Show ##
         ## Get data ##

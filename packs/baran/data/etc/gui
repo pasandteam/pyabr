@@ -43,3 +43,6 @@ loginw.input.bgcolor: white
 loginw.input.round: Yes
 loginw.input.round-size: 20 20
 loginw.input.font-size: 12
+
+taskbar.bgcolor: white
+taskbar.fgcolor: black
