@@ -17,6 +17,7 @@ backend.timeout: 1000
 splash.timeout: 3000
 splash.logo: @icon/pyabr-logo
 splash.logo-size: 300
+splash.color: #ABCDEF
 
 login.bgcolor: #123456
 login.background: @background/default
@@ -46,3 +47,7 @@ loginw.input.font-size: 12
 
 taskbar.bgcolor: white
 taskbar.fgcolor: black
+
+desktop.bgcolor: white
+desktop.fgcolor: black
+desktop.background: @background/default

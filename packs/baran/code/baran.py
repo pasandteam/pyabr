@@ -36,17 +36,22 @@ class variables:
     width = width
     height = height
     sides = False
-    login_bgcolor = '#FFFFFF'
+    login_bgcolor = '#123456'
     login_fgcolor = '#000000'
     login_background = None
-    enter_bgcolor = '#FFFFFF'
+    enter_bgcolor = None
     enter_fgcolor = '#000000'
     enter_background = None
     username = ''
     password = ''
-    desktop_bgcolor = '#123456'
-    desktop_fgcolor = '#FFFFFF'
+    desktop_bgcolor = '#FFFFFF'
+    desktop_fgcolor = '#000000'
     desktop_background = None
+    taskbar_bgcolor = '#FFFFFF'
+    loginw_bgcolor = '#FFFFFF'
+    userlogo_color = '#FFFFFF'
+    input_bgcolor = '#FFFFFF'
+    input_fgcolor = '#000000'
 
 ## ## ## ## ##
 
@@ -285,7 +290,7 @@ class LoginWidget (QMainWindow):
 
         ## Check data ##
         if loginw_bgcolor == None:
-            loginw_bgcolor = 'white'
+            loginw_bgcolor = variables.loginw_bgcolor
 
         if loginw_fgcolor == None:
             loginw_fgcolor = 'black'
@@ -389,7 +394,7 @@ class LoginWidget (QMainWindow):
         self.userlogo.setMaximumSize(250,250)
         self.userlogo.setGeometry(int(self.width()/2)-int(self.userlogo.width()/2),int(self.height()/4)-int(self.userlogo.height()/4),self.userlogo.width(),self.userlogo.height())
 
-        if loginw_userlogo_color == None: loginw_userlogo_color = 'white'
+        if loginw_userlogo_color == None: loginw_userlogo_color = variables.userlogo_color
 
         if not loginw_userlogo == None:
             if self.Env.objectName()=='Enter':
@@ -434,8 +439,8 @@ class LoginWidget (QMainWindow):
             self.leInput.setGraphicsEffect(shadow)
 
             ## Colors of leInput ##
-        if loginw_input_bgcolor==None: loginw_input_bgcolor='white'
-        if loginw_input_fgcolor==None: loginw_input_fgcolor='black'
+        if loginw_input_bgcolor==None: loginw_input_bgcolor=variables.input_bgcolor
+        if loginw_input_fgcolor==None: loginw_input_fgcolor=variables.input_fgcolor
 
             ## Setting up all colors ##
         self.leInput.setStyleSheet('background-color: '+loginw_input_bgcolor+';color: '+loginw_input_fgcolor+";border-width: 3%;border-radius: "+loginw_input_round)
@@ -548,38 +553,36 @@ class Login (QMainWindow):
         background = getdata('login.background')
         fgcolor = getdata('login.fgcolor')
 
-        ## Set fgcolor ##
-        if fgcolor == None:
-            variables.login_fgcolor = 'black'
-        else:
-            variables.login_fgcolor = fgcolor
-
         ## Widget for bgcolor or background ##
         self.backgroundButton = QPushButton()
         self.backgroundButton.setGeometry(0,0,variables.width,variables.height)
         self.layout().addWidget(self.backgroundButton)
 
         ## Set bgcolor and background ##
-        if background==None and bgcolor==None:
 
-            ## Set bgcolor ##
-            variables.login_bgcolor = 'white'
+        if background==None and bgcolor==None and not fgcolor==None:
+            variables.login_fgcolor = fgcolor
+            ## Set colors ##
             self.setStyleSheet('color: {0};'.replace('{0}',variables.login_fgcolor))
             self.backgroundButton.setStyleSheet('border:none;background-color: {0};'.replace('{0}',variables.login_bgcolor))
 
-        elif background==None:
+        elif background==None and not fgcolor==None:
 
-            ## Set bgcolor ##
+            ## Set colors ##
             variables.login_bgcolor = bgcolor
+            variables.login_fgcolor = fgcolor
 
             self.setStyleSheet('color: {0};'.replace('{0}', variables.login_fgcolor))
 
             self.backgroundButton.setStyleSheet('border:none;background-color: {0};'.replace('{0}', variables.login_bgcolor))
-        else:
+        elif not background==None and not fgcolor==None:
             ## Set bgcolor ##
+
             variables.login_background = res.get(background)
             self.setStyleSheet('color: {0};'.replace('{0}', variables.login_fgcolor))
             self.backgroundButton.setStyleSheet('border:none;background-image: url({0});'.replace('{0}', variables.login_background))
+        else:
+            self.setStyleSheet('background-color:{1};color: {0};'.replace('{0}', variables.login_fgcolor).replace('{1}',variables.login_bgcolor))
 
         ## Set size ##
         width = getdata('width')
@@ -667,41 +670,40 @@ class Enter (QMainWindow):
             value = control.read_record('enter.fgcolor','/etc/users/'+self.username)
             if not value==None: fgcolor = value
 
-        ## Set fgcolor ##
-        if fgcolor == None:
-            variables.enter_fgcolor = 'black'
-        else:
-            variables.enter_fgcolor = fgcolor
-
         ## Widget for bgcolor or background ##
         self.backgroundButton = QPushButton()
         self.backgroundButton.setGeometry(0, 0, variables.width, variables.height)
         self.layout().addWidget(self.backgroundButton)
 
         ## Set bgcolor and background ##
-        if background == None and bgcolor == None:
 
-            ## Set bgcolor ##
-            variables.enter_bgcolor = 'white'
+        if background == None and bgcolor == None and not fgcolor == None:
+            variables.enter_fgcolor = fgcolor
+            ## Set colors ##
             self.setStyleSheet('color: {0};'.replace('{0}', variables.enter_fgcolor))
             self.backgroundButton.setStyleSheet(
                 'border:none;background-color: {0};'.replace('{0}', variables.enter_bgcolor))
 
-        elif background == None:
+        elif background == None and not fgcolor == None:
 
-            ## Set bgcolor ##
+            ## Set colors ##
             variables.enter_bgcolor = bgcolor
+            variables.enter_fgcolor = fgcolor
 
             self.setStyleSheet('color: {0};'.replace('{0}', variables.enter_fgcolor))
 
             self.backgroundButton.setStyleSheet(
                 'border:none;background-color: {0};'.replace('{0}', variables.enter_bgcolor))
-        else:
+        elif not background == None and not fgcolor == None:
             ## Set bgcolor ##
+
             variables.enter_background = res.get(background)
             self.setStyleSheet('color: {0};'.replace('{0}', variables.enter_fgcolor))
             self.backgroundButton.setStyleSheet(
                 'border:none;background-image: url({0});'.replace('{0}', variables.enter_background))
+        else:
+            self.setStyleSheet('background-color:{1};color: {0};'.replace('{0}', variables.enter_fgcolor).replace('{1}',
+                                                                                                                  variables.enter_bgcolor))
 
         ## Set size ##
         width = getdata('width')
@@ -765,7 +767,7 @@ class TaskBar (QToolBar):
         if not self.Env.username=='guest':
             value = control.read_record('taskbar.bgcolor','/etc/users/'+self.username)
             if not value==None: bgcolor = value
-        if bgcolor == None: bgcolor = 'white'
+        if bgcolor == None: bgcolor = variables.taskbar_bgcolor
 
         ## Set fgcolor ##
         fgcolor = getdata('taskbar.fgcolor')
@@ -775,6 +777,10 @@ class TaskBar (QToolBar):
         if fgcolor == None: fgcolor = 'black'
 
             ################################
+
+        # styles #
+
+        self.setStyleSheet('background-color: '+bgcolor+";color: "+fgcolor+";")
 
         ## Add taskbar ##
         self.Env.addToolBar (self)
@@ -786,6 +792,9 @@ class Desktop (QMainWindow):
 
         ## Set port name ##
         self.setObjectName('Desktop')
+
+        ## ports ##
+        self.Backend = ports[0]
 
         ## username ##
         self.username = username
@@ -826,42 +835,36 @@ class Desktop (QMainWindow):
             value = control.read_record('desktop.fgcolor','/etc/users/'+self.username)
             if not value==None: fgcolor = value
 
-        ## Check None bg ##
-        if bgcolor == None: bgcolor = 'white'
-        if fgcolor == None: fgcolor = 'black'
-        if background == None: background = '@background/default'
+            ## Set bgcolor and background ##
 
-        ## Set fgcolor ##
-        if fgcolor == None:
-            variables.desktop_fgcolor = 'black'
-        else:
-            variables.desktop_fgcolor = fgcolor
+            if background == None and bgcolor == None and not fgcolor == None:
+                variables.desktop_fgcolor = fgcolor
+                ## Set colors ##
+                self.setStyleSheet('color: {0};'.replace('{0}', variables.desktop_fgcolor))
+                self.backgroundButton.setStyleSheet(
+                    'border:none;background-color: {0};'.replace('{0}', variables.desktop_bgcolor))
 
+            elif background == None and not fgcolor == None:
 
-        ## Set bgcolor and background ##
-        if background == None and bgcolor == None:
+                ## Set colors ##
+                variables.desktop_bgcolor = bgcolor
+                variables.desktop_fgcolor = fgcolor
 
-            ## Set bgcolor ##
-            variables.desktop_bgcolor = 'white'
-            self.setStyleSheet('color: {0};'.replace('{0}', variables.desktop_fgcolor))
-            self.backgroundButton.setStyleSheet(
-                'border:none;background-color: {0};'.replace('{0}', variables.desktop_bgcolor))
+                self.setStyleSheet('color: {0};'.replace('{0}', variables.desktop_fgcolor))
 
-        elif background == None:
+                self.backgroundButton.setStyleSheet(
+                    'border:none;background-color: {0};'.replace('{0}', variables.desktop_bgcolor))
+            elif not background == None and not fgcolor == None:
+                ## Set bgcolor ##
 
-            ## Set bgcolor ##
-            variables.desktop_bgcolor = bgcolor
-
-            self.setStyleSheet('color: {0};'.replace('{0}', variables.desktop_fgcolor))
-
-            self.backgroundButton.setStyleSheet(
-                'border:none;background-color: {0};'.replace('{0}', variables.desktop_bgcolor))
-        else:
-            ## Set bgcolor ##
-            variables.desktop_background = res.get(background)
-            self.setStyleSheet('color: {0};'.replace('{0}', variables.desktop_fgcolor))
-            self.backgroundButton.setStyleSheet(
-                'border:none;background-image: url({0});'.replace('{0}', variables.desktop_background))
+                variables.desktop_background = res.get(background)
+                self.setStyleSheet('color: {0};'.replace('{0}', variables.desktop_fgcolor))
+                self.backgroundButton.setStyleSheet(
+                    'border:none;background-image: url({0});'.replace('{0}', variables.desktop_background))
+            else:
+                self.setStyleSheet(
+                    'background-color:{1};color: {0};'.replace('{0}', variables.desktop_fgcolor).replace('{1}',
+                                                                                                       variables.desktop_bgcolor))
 
         ## Set size ##
         width = getdata('width')
