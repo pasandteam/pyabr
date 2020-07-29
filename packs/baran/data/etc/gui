@@ -3,11 +3,11 @@
 desktop: baran
 login: baran login
 user: baran user
-fullscreen: Yes
+fullscreen: No
 sides: No
-width: 1920
-height: 1080
-autosize: Yes
+width: 1280
+height: 720
+autosize: No
 logo: @icon/pyabr-logo
 locale: en
 
@@ -51,3 +51,8 @@ taskbar.fgcolor: black
 desktop.bgcolor: white
 desktop.fgcolor: black
 desktop.background: @background/default
+
+loginw.login.round: Yes
+loginw.login.round-size: 20
+loginw.enter.round: Yes
+loginw.enter.round-size: 20

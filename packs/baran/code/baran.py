@@ -52,6 +52,39 @@ class variables:
     userlogo_color = '#FFFFFF'
     input_bgcolor = '#FFFFFF'
     input_fgcolor = '#000000'
+    loginw_fgcolor = '#000000'
+    loginw_round_size = 20
+    loginw_userlogo_round_size = 125
+    loginw_input_round_size = 20
+    loginw_location = 'center'
+    loginw_input_fontsize = 12
+    loginw_login_bgcolor = '#ABCDEF'
+    loginw_login_fgcolor = '#FFFFFF'
+    loginw_login_pressed_bgcolor = '#123456'
+    loginw_login_pressed_fgcolor = '#FFFFFF'
+    loginw_login_fontsize = 12
+    loginw_login_round = 'Yes'
+    loginw_login_round_size = 20
+    loginw_login_hide = 'No'
+    loginw_login_width = 300
+    loginw_enter_bgcolor = 'pink'
+    loginw_enter_fgcolor = '#FFFFFF'
+    loginw_enter_pressed_bgcolor = 'purple'
+    loginw_enter_pressed_fgcolor = '#FFFFFF'
+    loginw_enter_fontsize = 12
+    loginw_enter_round = 'Yes'
+    loginw_enter_round_size = 20
+    loginw_enter_hide = 'No'
+    loginw_enter_width = 300
+    loginw_shadow = 'Yes'
+    loginw_userlogo_shadow = 'Yes'
+    loginw_input_shadow = 'Yes'
+    loginw_login_shadow = 'No'
+    loginw_enter_shadow = 'No'
+    loginw_input_width = 300
+    loginw_input_height = 40
+    loginw_login_height = 40
+    loginw_enter_height = 40
 
 ## ## ## ## ##
 
@@ -283,17 +316,95 @@ class LoginWidget (QMainWindow):
         loginw_input_fgcolor = getdata('loginw.input.fgcolor')
         loginw_input_shadow = getdata('loginw.input.shadow')
         loginw_input_round = getdata('loginw.input.round')
+        loginw_input_width = getdata('loginw.input.width')
         loginw_input_round_size = getdata('loginw.input.round-size')
         loginw_userlogo_round = getdata('loginw.userlogo.round')
         loginw_userlogo_round_size = getdata('loginw.userlogo.round-size')
         loginw_input_fontsize = getdata('loginw.input.fontsize')
+        loginw_login_bgcolor = getdata('loginw.login.bgcolor')
+        loginw_login_fgcolor = getdata('loginw.login.fgcolor')
+        loginw_login_fontsize = getdata('loginw.login.fontsize')
+        loginw_login_round = getdata('loginw.login.round')
+        loginw_login_round_size = getdata('loginw.login.round-size')
+        loginw_login_hide = getdata ('loginw.login.hide')
+        loginw_login_pressed_fgcolor = getdata('loginw.login.pressed-fgcolor')
+        loginw_login_pressed_bgcolor = getdata('loginw.login.pressed-bgcolor')
+        loginw_login_width = getdata('loginw.login.width')
+        loginw_login_shadow = getdata('loginw.login.shadow')
+        loginw_enter_bgcolor = getdata('loginw.enter.bgcolor')
+        loginw_enter_fgcolor = getdata('loginw.enter.fgcolor')
+        loginw_enter_fontsize = getdata('loginw.enter.fontsize')
+        loginw_enter_round = getdata('loginw.enter.round')
+        loginw_enter_round_size = getdata('loginw.enter.round-size')
+        loginw_enter_hide = getdata('loginw.enter.hide')
+        loginw_enter_pressed_fgcolor = getdata('loginw.enter.pressed-fgcolor')
+        loginw_enter_pressed_bgcolor = getdata('loginw.enter.pressed-bgcolor')
+        loginw_enter_width = getdata('loginw.enter.width')
+        loginw_enter_shadow = getdata('loginw.enter.shadow')
+        loginw_input_height = getdata('loginw.input.height')
+        loginw_login_height = getdata('loginw.login.height')
+        loginw_enter_height = getdata('loginw.enter.height')
 
         ## Check data ##
         if loginw_bgcolor == None:
             loginw_bgcolor = variables.loginw_bgcolor
 
+        if loginw_input_height == None:
+            loginw_input_height = variables.loginw_input_height
+        else:
+            loginw_input_height = int(loginw_input_height)
+
+        if loginw_login_height == None:
+            loginw_login_height = variables.loginw_login_height
+        else:
+            loginw_login_height = int(loginw_login_height)
+
+        if loginw_enter_height == None:
+            loginw_enter_height = variables.loginw_enter_height
+        else:
+            loginw_enter_height = int(loginw_enter_height)
+
+        if loginw_login_width == None:
+            loginw_login_width = variables.loginw_login_width
+        else:
+            loginw_login_width = int(loginw_login_width)
+
+        if loginw_input_width == None:
+            loginw_input_width = variables.loginw_input_width
+        else:
+            loginw_input_width = int(loginw_input_width)
+
+        if loginw_enter_width == None:
+            loginw_enter_width = variables.loginw_enter_width
+        else:
+            loginw_enter_width = int(loginw_enter_width)
+
         if loginw_fgcolor == None:
-            loginw_fgcolor = 'black'
+            loginw_fgcolor = variables.loginw_fgcolor
+
+        if loginw_login_bgcolor == None:
+            loginw_login_bgcolor = variables.loginw_login_bgcolor
+
+        if loginw_login_fgcolor == None:
+            loginw_login_fgcolor = variables.loginw_login_fgcolor
+
+        if loginw_login_pressed_bgcolor == None:
+            loginw_login_pressed_bgcolor = variables.loginw_login_pressed_bgcolor
+
+        if loginw_login_pressed_fgcolor == None:
+            loginw_login_pressed_fgcolor = variables.loginw_login_pressed_fgcolor
+
+        if loginw_enter_bgcolor == None:
+            loginw_enter_bgcolor = variables.loginw_enter_bgcolor
+
+        if loginw_enter_fgcolor == None:
+            loginw_enter_fgcolor = variables.loginw_enter_fgcolor
+
+        if loginw_enter_pressed_bgcolor == None:
+            loginw_enter_pressed_bgcolor = variables.loginw_enter_pressed_bgcolor
+
+        if loginw_enter_pressed_fgcolor == None:
+            loginw_enter_pressed_fgcolor = variables.loginw_enter_pressed_fgcolor
 
         if loginw_width == None:
             loginw_width = self.width()
@@ -302,24 +413,34 @@ class LoginWidget (QMainWindow):
             loginw_height = self.height()
 
         if loginw_round_size == None:
-            loginw_round_size = '20% 20%'
+            loginw_round_size = str(variables.loginw_round_size)+'% '+str(variables.loginw_round_size)+'%'
         else:
             loginw_round_size = loginw_round_size.replace(' ','% ')+'%'
 
         if loginw_userlogo_round_size == None:
-            loginw_userlogo_round_size = '125% 125%'
+            loginw_userlogo_round_size = str(variables.loginw_userlogo_round_size)+'% '+str(variables.loginw_userlogo_round_size)+'%'
         else:
             loginw_userlogo_round_size = loginw_userlogo_round_size.replace(' ','% ')+'%'
 
         if loginw_input_round_size == None:
-            loginw_input_round_size = '20% 20%'
+            loginw_input_round_size = str(variables.loginw_input_round_size)+'% '+str(variables.loginw_input_round_size)+'%'
         else:
             loginw_input_round_size = loginw_input_round_size.replace(' ','% ')+'%'
+
+        if loginw_login_round_size == None:
+            loginw_login_round_size = str(variables.loginw_login_round_size)+'% '+str(variables.loginw_login_round_size)+'%'
+        else:
+            loginw_login_round_size = loginw_login_round_size.replace(' ','% ')+'%'
+
+        if loginw_enter_round_size == None:
+            loginw_enter_round_size = str(variables.loginw_enter_round_size)+'% '+str(variables.loginw_enter_round_size)+'%'
+        else:
+            loginw_enter_round_size = loginw_enter_round_size.replace(' ','% ')+'%'
 
         if loginw_round == 'Yes':
             loginw_round = loginw_round_size
         else:
-            loginw_round = '0% 0%'
+            loginw_round ='0% 0%'
 
         if loginw_userlogo_round == 'Yes':
             loginw_userlogo_round = loginw_userlogo_round_size
@@ -331,13 +452,37 @@ class LoginWidget (QMainWindow):
         else:
             loginw_input_round = '0% 0%'
 
+        if loginw_login_round == 'Yes':
+            loginw_login_round = loginw_login_round_size
+        else:
+            loginw_login_round = '0% 0%'
+
+        if loginw_enter_round == 'Yes':
+            loginw_enter_round = loginw_enter_round_size
+        else:
+            loginw_enter_round = '0% 0%'
+
         if loginw_location == None:
-            loginw_location = 'center'
+            loginw_location = variables.loginw_location
 
         if loginw_input_fontsize==None:
-            loginw_input_fontsize = 12
+            loginw_input_fontsize = variables.loginw_input_fontsize
         else:
             loginw_input_fontsize = int(loginw_input_fontsize)
+
+        if loginw_login_fontsize==None:
+            loginw_login_fontsize = variables.loginw_login_fontsize
+        else:
+            loginw_login_fontsize = int(loginw_login_fontsize)
+
+        if loginw_login_hide == None: loginw_login_hide = variables.loginw_login_hide
+
+        if loginw_enter_fontsize==None:
+            loginw_enter_fontsize = variables.loginw_enter_fontsize
+        else:
+            loginw_enter_fontsize = int(loginw_enter_fontsize)
+
+        if loginw_enter_hide == None: loginw_enter_hide = variables.loginw_enter_hide
 
         self.setMaximumSize(int(loginw_width), int(loginw_height))  ## Set size of loginw
 
@@ -361,6 +506,12 @@ class LoginWidget (QMainWindow):
             self.setGeometry(int(self.Env.width() / 2) - int(self.width() / 2),
                              self.Env.height() - int(self.height() / 20) - self.height(), self.width(),
                              self.height())  ## Geometric
+
+        if loginw_shadow==None: loginw_shadow = variables.loginw_shadow
+        if loginw_userlogo_shadow == None: loginw_userlogo_shadow = variables.loginw_userlogo_shadow
+        if loginw_input_shadow == None: loginw_input_shadow = variables.loginw_input_shadow
+        if loginw_login_shadow == None: loginw_login_shadow = variables.loginw_login_shadow
+        if loginw_enter_shadow == None: loginw_enter_shadow = variables.loginw_enter_shadow
 
         if loginw_shadow=='Yes':
             ## Shadow ##
@@ -409,7 +560,7 @@ class LoginWidget (QMainWindow):
 
             ## Shadow for userlogo ##
         ## Shadow ##
-        if not loginw_userlogo_shadow=='No':
+        if loginw_userlogo_shadow=='Yes':
             # Copy right shadow box: medium.com/@rekols/qt-button-box-shadow-property-c47c7bf58721 ##
             shadow = QGraphicsDropShadowEffect()
             shadow.setColor(QColor(10, 2, 34, 255 * 0.8))
@@ -425,12 +576,12 @@ class LoginWidget (QMainWindow):
         self.leInput = QLineEdit()
 
             ## Size & Location of leInput ##
-        self.leInput.setMaximumSize(int(self.width()/2),40)
+        self.leInput.setMaximumSize(loginw_input_width,loginw_input_height)
         self.leInput.setGeometry(int(self.width()/2)-int(self.leInput.width()/2),self.height()-int(self.height()/4)-self.leInput.height(),self.leInput.width(),self.leInput.height())
 
             ## Shadow of leInput ##
         ## Shadow ##
-        if not loginw_input_shadow=='No':
+        if loginw_input_shadow=='Yes':
             # Copy right shadow box: medium.com/@rekols/qt-button-box-shadow-property-c47c7bf58721 ##
             shadow = QGraphicsDropShadowEffect()
             shadow.setColor(QColor(10, 2, 34, 255 * 0.8))
@@ -451,7 +602,6 @@ class LoginWidget (QMainWindow):
             self.leInput.setPlaceholderText(res.get('@string/username_placeholder')) # See https://stackoverflow.com/questions/24274318/placeholder-text-not-showing-pyside-pyqt
         else:
             self.leInput.setEchoMode(QLineEdit.Password)
-            print (res.get('@string/password_placeholder').replace("{0}",self.Env.username))
             self.leInput.setPlaceholderText(res.get('@string/password_placeholder').replace("{0}",self.Env.username))
 
             ## Setting up font settings ##
@@ -465,6 +615,85 @@ class LoginWidget (QMainWindow):
 
         ## Add leInput Widget ##
         self.layout().addWidget(self.leInput)
+
+            ## Enter button ##
+        if self.Env.objectName()=='Login':
+            self.btnLogin = QPushButton()
+
+            ## Shadow ##
+            if loginw_login_shadow == 'Yes':
+                ## Shadow ##
+                # Copy right shadow box: medium.com/@rekols/qt-button-box-shadow-property-c47c7bf58721 ##
+                shadow = QGraphicsDropShadowEffect()
+                shadow.setColor(QColor(10, 2, 34, 255 * 0.8))
+                shadow.setOffset(0)
+                shadow.setBlurRadius(10)
+                self.btnLogin.setGraphicsEffect(shadow)
+
+            self.btnLogin.clicked.connect (self.actions)
+            print(loginw_login_round)
+            self.btnLogin.setStyleSheet('''
+                    QPushButton {
+                        background-color: ''' + loginw_login_bgcolor + """;
+                        color: """ + loginw_login_fgcolor + """;
+                        border-radius: """ + loginw_login_round + '''
+                    } 
+                    QPushButton:pressed {
+                        background-color:''' + loginw_login_pressed_bgcolor + ''';
+                        color:''' + loginw_login_pressed_fgcolor + ''';
+                        border-radius: ''' + loginw_login_round + ''';
+                    }
+                    ''')
+
+            f = QFont()
+            f.setPointSize(loginw_login_fontsize)
+            self.btnLogin.setFont(f)
+            if loginw_login_hide == 'Yes':
+                self.btnLogin.hide()
+            self.btnLogin.setText(res.get('@string/next_text'))
+            self.btnLogin.setMaximumSize(loginw_login_width, loginw_login_height)
+            self.btnLogin.setGeometry(int(self.width() / 2) - int(self.btnLogin.width() / 2),
+                                      self.height() - int(self.height() / 4) - int(self.btnLogin.height() / 4) + int(self.btnLogin.height()/2),
+                                      self.btnLogin.width(), self.btnLogin.height())
+            self.layout().addWidget(self.btnLogin)
+        else:
+            self.btnEnter = QPushButton()
+            ## Shadow ##
+            if loginw_enter_shadow == 'Yes':
+                ## Shadow ##
+                # Copy right shadow box: medium.com/@rekols/qt-button-box-shadow-property-c47c7bf58721 ##
+                shadow = QGraphicsDropShadowEffect()
+                shadow.setColor(QColor(10, 2, 34, 255 * 0.8))
+                shadow.setOffset(0)
+                shadow.setBlurRadius(10)
+                self.btnEnter.setGraphicsEffect(shadow)
+
+            self.btnEnter.clicked.connect (self.actions)
+            self.btnEnter.setStyleSheet('''
+                    QPushButton {
+                        background-color: ''' + loginw_enter_bgcolor + """;
+                        color: """ + loginw_enter_fgcolor + """;
+                        border-radius: """ + loginw_enter_round + '''
+                    } 
+                    QPushButton:pressed {
+                        background-color:''' + loginw_enter_pressed_bgcolor + ''';
+                        color:''' + loginw_enter_pressed_fgcolor + ''';
+                        border-radius: ''' + loginw_enter_round + ''';
+                    }
+                    ''')
+
+            f = QFont()
+            f.setPointSize(loginw_enter_fontsize)
+            self.btnEnter.setFont(f)
+            if loginw_enter_hide == 'Yes':
+                self.btnEnter.hide()
+            self.btnEnter.setText(res.get('@string/enter_text'))
+            self.btnEnter.setMaximumSize(loginw_enter_width, loginw_enter_height)
+            self.btnEnter.setGeometry(int(self.width() / 2) - int(self.btnEnter.width() / 2),
+                                      self.height() - int(self.height() / 4) - int(self.btnEnter.height() / 4) + int(self.btnEnter.height()/2),
+                                      self.btnEnter.width(), self.btnEnter.height())
+            self.layout().addWidget(self.btnEnter)
+
 
     def actions (self):
         if self.Env.objectName() == 'Login':
@@ -633,7 +862,7 @@ class Enter (QMainWindow):
         super(Enter, self).__init__()
 
         ## username ##
-        self.username = username
+        self.username = username.lower()
 
         ## Ports ##
         self.Backend = ports[0]
@@ -797,7 +1026,7 @@ class Desktop (QMainWindow):
         self.Backend = ports[0]
 
         ## username ##
-        self.username = username
+        self.username = username.lower()
         self.password = password
 
         ## Get informations ##

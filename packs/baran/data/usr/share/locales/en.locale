@@ -2,3 +2,5 @@ desktop.username_placeholder: Enter an username
 desktop.password_placeholder: Enter {0}'s password
 desktop.user_not_found: {0} user not found
 desktop.wrong_password: Password is not correct. Try again
+desktop.next_text: Next
+desktop.enter_text: Login
